@@ -5,7 +5,7 @@
 ;//////////////[variables]///////////////
 SetWorkingDir %A_ScriptDir%
 appfoldername = DiscordMusicBotAhk
-version = 0.82
+version = 0.83
 ;____________________________________________________________
 ;____________________________________________________________
 ;//////////////[Read settings]///////////////
@@ -118,10 +118,15 @@ Gui Add, Text, x8 y416 w256 h23 +0x200, DiscordMusicBotAhk Version: %version%
 Gui Font
 Gui Add, GroupBox, x240 y280 w180 h114, Delete files
 Gui Add, Button, x248 y304 w160 h23 gdeleteplaylists, Delete all playlists
-Gui Add, Button, x248 y331 w160 h23 gdeletesettings +Disabled, Delete settings
+Gui Add, Button, x248 y331 w160 h23 gdeletesettings, Delete settings
 Gui Add, Button, x248 y360 w160 h23 gdeletefiles, Delete all files
 Gui Add, GroupBox, x309 y32 w265 h59, Update
-Gui Add, CheckBox, x320 y56 w134 h23 vcheck gAutoUpdates, Check updates on start
+Gui Add, CheckBox, x320 y56 w134 h23 vcheckup gAutoUpdates, Check updates on start
+IfExist, %A_ScriptDir%\%appfoldername%\Settings\Settings.ini
+{
+    IniRead, t_checkup, %A_ScriptDir%\%appfoldername%\Settings\Settings.ini, Settings, Updates
+	GuiControl,,checkup,%t_checkup%
+}
 Gui Add, Button, x464 y56 w96 h23 gcheckForupdatesbtn, Check updates
 ;____________________________________________________
 ;____________________________________________________
@@ -673,16 +678,20 @@ IfMsgBox, Cancel
 }
 FileRemoveDir, %A_AppData%\%appfoldername%,1
 FileRemoveDir, %A_ScriptDir%\%appfoldername%,1
+;Reset all settings when settings files are removed
+GuiControl,,checkup,0
 goto refresh
 return
 deletesettings:
-MsgBox, 1,Are you sure?,All files will be deleted!,15
+MsgBox, 1,Are you sure?,All Settings will be deleted!,15
 IfMsgBox, Cancel
 {
 	return
 }
-;FileRemoveDir, %A_AppData%\%appfoldername%,1
-;FileRemoveDir, %A_ScriptDir%\%appfoldername%,1
+FileRemoveDir, %A_AppData%\%appfoldername%\Settings,1
+FileRemoveDir, %A_ScriptDir%\%appfoldername%\Settings,1
+;Reset all settings when settings files are removed
+GuiControl,,checkup,0
 goto refresh
 return
 ;____________________________________________________________
@@ -716,10 +725,11 @@ if(newversion != "")
 			ExitApp
         }
     }
+	else
     {
         if(btn_pressed_update == 1)
         {
-            MsgBox,, You already have the latest update, 10
+            MsgBox,,Up to date,You already have the latest update, 10
         }
     }
 }
@@ -728,5 +738,6 @@ return
 ;Check updates on start
 AutoUpdates:
 Gui, Submit, Nohide
+FileCreateDir, %A_ScriptDir%\%appfoldername%\Settings
 IniWrite, %checkup%, %A_ScriptDir%\%appfoldername%\Settings\Settings.ini, Settings, Updates
 return
