@@ -5,7 +5,7 @@
 ;//////////////[variables]///////////////
 SetWorkingDir %A_ScriptDir%
 appfoldername = DiscordMusicBotAhk
-version = 0.81
+version = 0.82
 ;____________________________________________________________
 ;____________________________________________________________
 ;//////////////[Read settings]///////////////
@@ -120,6 +120,9 @@ Gui Add, GroupBox, x240 y280 w180 h114, Delete files
 Gui Add, Button, x248 y304 w160 h23 gdeleteplaylists, Delete all playlists
 Gui Add, Button, x248 y331 w160 h23 gdeletesettings +Disabled, Delete settings
 Gui Add, Button, x248 y360 w160 h23 gdeletefiles, Delete all files
+Gui Add, GroupBox, x309 y32 w265 h59, Update
+Gui Add, CheckBox, x320 y56 w134 h23 vcheck gAutoUpdates, Check updates on start
+Gui Add, Button, x464 y56 w96 h23 gcheckForupdatesbtn, Check updates
 ;____________________________________________________
 ;____________________________________________________
 Gui Show, w639 h456, Discord Music Bot Ahk
@@ -689,7 +692,7 @@ checkForupdatesbtn:
 btn_pressed_update = 1
 checkForupdates:
 whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-whr.Open("GET", "https://raw.githubusercontent.com/veskeli/AutoStartupAhk/master/Version.txt", False)
+whr.Open("GET", "https://raw.githubusercontent.com/veskeli/DiscordMusicBotAhk/master/Version.txt", False)
 whr.Send()
 whr.WaitForResponse()
 newversion := whr.ResponseText
@@ -707,7 +710,7 @@ if(newversion != "")
             ;Download update
             FileMove, %A_ScriptFullPath%, %A_ScriptDir%\%appfoldername%\%A_ScriptName%, 1
             sleep 1000
-            UrlDownloadToFile, %TiedostoLatausLinkki%, %A_ScriptFullPath%
+            UrlDownloadToFile, https://raw.githubusercontent.com/veskeli/DiscordMusicBotAhk/master/DiscordMusicBotAhk.ahk, %A_ScriptFullPath%
             Sleep 1000
 			Run, %A_ScriptFullPath%
 			ExitApp
@@ -721,4 +724,9 @@ if(newversion != "")
     }
 }
 btn_pressed_update = 0
+return
+;Check updates on start
+AutoUpdates:
+Gui, Submit, Nohide
+IniWrite, %checkup%, %A_ScriptDir%\%appfoldername%\Settings\Settings.ini, Settings, Updates
 return
