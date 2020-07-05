@@ -5,7 +5,7 @@
 ;//////////////[variables]///////////////
 SetWorkingDir %A_ScriptDir%
 appfoldername = DiscordMusicBotAhk
-version = 0.83
+version = 0.84
 ;____________________________________________________________
 ;____________________________________________________________
 ;//////////////[Read settings]///////////////
@@ -666,9 +666,12 @@ IfMsgBox, Cancel
 {
 	return
 }
-FileRemoveDir, %A_AppData%\%appfoldername%\playlists,1
-FileRemoveDir, %A_ScriptDir%\%appfoldername%\playlists,1
-goto refresh
+else
+{
+	;FileRemoveDir, %A_AppData%\%appfoldername%\playlists,1
+	FileRemoveDir, %A_ScriptDir%\%appfoldername%\playlists,1
+	goto refresh
+}
 return
 deletefiles:
 MsgBox, 1,Are you sure?,All files will be deleted!,15
@@ -676,11 +679,14 @@ IfMsgBox, Cancel
 {
 	return
 }
-FileRemoveDir, %A_AppData%\%appfoldername%,1
-FileRemoveDir, %A_ScriptDir%\%appfoldername%,1
-;Reset all settings when settings files are removed
-GuiControl,,checkup,0
-goto refresh
+else
+{
+	;FileRemoveDir, %A_AppData%\%appfoldername%,1
+	FileRemoveDir, %A_ScriptDir%\%appfoldername%,1
+	;Reset all settings when settings files are removed
+	GuiControl,,checkup,0
+	goto refresh
+}
 return
 deletesettings:
 MsgBox, 1,Are you sure?,All Settings will be deleted!,15
@@ -688,11 +694,14 @@ IfMsgBox, Cancel
 {
 	return
 }
-FileRemoveDir, %A_AppData%\%appfoldername%\Settings,1
-FileRemoveDir, %A_ScriptDir%\%appfoldername%\Settings,1
-;Reset all settings when settings files are removed
-GuiControl,,checkup,0
-goto refresh
+else
+{
+	;FileRemoveDir, %A_AppData%\%appfoldername%\Settings,1
+	FileRemoveDir, %A_ScriptDir%\%appfoldername%\Settings,1
+	;Reset all settings when settings files are removed
+	GuiControl,,checkup,0
+	goto refresh
+}
 return
 ;____________________________________________________________
 ;____________________________________________________________
